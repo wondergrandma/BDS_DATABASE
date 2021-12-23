@@ -1,5 +1,4 @@
 from tkinter import *
-from sql_data import Sql
 import bcrypt
 
 class Login:
@@ -14,7 +13,7 @@ class Login:
 
     def loginScreen(self, window):
         
-        sql = Sql()
+        
 
         window.title("Postgres Database")
         window.geometry("500x250")
@@ -33,5 +32,5 @@ class Login:
         t2.grid(row=1,column=1)
 
         
-        login_button1 = Button(window, text="LOG IN", command=sql.loginSql)
-        login_button1.pack()
+        #login_button1 = Button(window, text="LOG IN", command=)
+        #login_button1.pack()

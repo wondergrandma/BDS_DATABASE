@@ -44,6 +44,63 @@ class TreeView:
         my_tree.heading("Email", text="Email", anchor=CENTER)
         my_tree.heading("Password", text="Password", anchor=CENTER)
 
+        #Search podla priezviska
+        def search_lname():
+            global count 
+            count = 0
+
+            find_data = search_box.get()
+            search_win.destroy()
+
+            for data in my_tree.get_children():
+                my_tree.delete(data)
+            
+            conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
+            cur = conn.cursor()
+                
+            cur.execute("SELECT user_id, first_name, second_name, mail, pwd FROM \"user\" WHERE second_name =  " + "'"+find_data+"'")
+            data = cur.fetchall()
+
+            for record in data:
+                if count % 2 == 0:
+                    my_tree.insert(parent='', index='end', iid=count, text='', values=(record[0], record[1], record[2], record[3], record[4]))
+                else:
+                    my_tree.insert(parent='', index='end', iid=count, text='', values=(record[0], record[1], record[2], record[3], record[4]))
+                count += 1
+
+            conn.commit()
+            cur.close()
+
+        #Vytvorenie search okna
+        def search_records():
+            global search_box, search_win
+
+            search_win = Toplevel(window)
+            search_win.title("Search")
+            search_win.geometry("200x200")
+
+            frame_win = LabelFrame(search_win, text="")
+            frame_win.pack(padx = 10, pady = 10)
+
+            search_box= Entry(frame_win)
+            search_box.pack(padx = 20, pady = 20)
+
+            search_button = Button(search_win, text="Search", command = search_lname)
+            search_button.pack(padx = 20, pady = 20)
+
+        #Vytvorenie menu
+        def search():
+            pass
+
+        my_options = Menu(window)
+        window.config(menu = my_options)
+
+        search_menu = Menu(my_options, tearoff=0)
+        my_options.add_cascade(label="Option", menu = search_menu)
+
+        search_menu.add_command(label="Search", command = search_records)
+        search_menu.add_command(label="Exit", command = window.quit)
+
         #vypísanie dát z PG admin
         def readData():
             conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
@@ -130,13 +187,8 @@ class TreeView:
 
             selected = my_tree.focus()
             my_tree.item(selected, text="", values=(id_box.get(), fname_box.get(), sname_box.get(), email_box.get(), pwd_box.get()))
-            cur.execute("UPDATE \"user\" SET first_name = ':fname', second_name = ':sname', mail = ':email' WHERE user_id = :id;",
-            {'fname': fname_box.get(), 
-             'sname': sname_box.get(), 
-             'mail': email_box.get(), 
-             'id': id_box.get()})
-
-
+            cur.execute("UPDATE \"user\" SET first_name = %s, second_name = %s, mail = %s WHERE user_id = %s;", fname_box.get(), sname_box.get(), email_box.get(), id_box.get(),)
+            
             conn.commit()
             cur.close()
 
