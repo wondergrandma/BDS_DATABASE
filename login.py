@@ -1,7 +1,16 @@
 from tkinter import *
 from sql_data import Sql
+import bcrypt
 
 class Login:
+
+    mail = ""
+    password = ""
+    
+    def __init__(self,mail, password):
+        self.mail = mail
+        self.password = password
+        self.hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
 
     def loginScreen(self, window):
         

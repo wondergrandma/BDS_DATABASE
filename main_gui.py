@@ -1,10 +1,12 @@
 from tkinter import *
-from login import Login
+from tree_view import TreeView
+
 
 window = Tk()
-log = Login()
+tree_w = TreeView()
 
-log.loginScreen(window)
+tree_w.viewDatabase(window)
+
+
 
 window.mainloop()
-
