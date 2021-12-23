@@ -88,10 +88,7 @@ class TreeView:
             search_button = Button(search_win, text="Search", command = search_lname)
             search_button.pack(padx = 20, pady = 20)
 
-        #Vytvorenie menu
-        def search():
-            pass
-
+        """#Vytvorenie menu
         my_options = Menu(window)
         window.config(menu = my_options)
 
@@ -99,10 +96,15 @@ class TreeView:
         my_options.add_cascade(label="Option", menu = search_menu)
 
         search_menu.add_command(label="Search", command = search_records)
-        search_menu.add_command(label="Exit", command = window.quit)
+        search_menu.add_command(label="Reset", command = search_records)
+        search_menu.add_command(label="Exit", command = window.quit)"""
 
         #vypísanie dát z PG admin
         def readData():
+            #Funkcia na zmazanie predošlých dát dalej je implementovaná v tlačítku
+            for data in my_tree.get_children():
+                my_tree.delete(data)
+
             conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
             cur = conn.cursor()
                 
@@ -120,6 +122,17 @@ class TreeView:
             conn.close()
 
         my_tree.pack(pady=20)
+
+        #Vytvorenie menu
+        my_options = Menu(window)
+        window.config(menu = my_options)
+
+        search_menu = Menu(my_options, tearoff=0)
+        my_options.add_cascade(label="Option", menu = search_menu)
+
+        search_menu.add_command(label="Search", command = search_records)
+        search_menu.add_command(label="Reset", command = readData)
+        search_menu.add_command(label="Exit", command = window.quit)
 
         frame = Frame(window)
         frame.pack(pady=20)
