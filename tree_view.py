@@ -65,10 +65,11 @@ class TreeView:
 
         #Napojenie na databázu bez preapered statementu
         def sql_injection():
+            find_data = dummy_box.get()
             conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
             cur = conn.cursor()
 
-            cur.execute(dummy_box.get())
+            cur.execute("SELECT user_id, first_name, second_name, mail, pwd FROM \"user\" WHERE second_name =  " + "'"+find_data+"'")
             #cur.fetchall()
 
             conn.commit()
@@ -89,7 +90,8 @@ class TreeView:
             conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
             cur = conn.cursor()
                 
-            cur.execute("SELECT user_id, first_name, second_name, mail, pwd FROM \"user\" WHERE second_name =  " + "'"+find_data+"'")
+            cur.execute("SELECT user_id, first_name, second_name, mail, pwd FROM \"user\" WHERE second_name = %s ", (find_data,))
+        
             data = cur.fetchall()
 
             for record in data:
@@ -231,7 +233,7 @@ class TreeView:
             pwd_box.delete(0, END)
         
         def delete_record():
-           
+           try:
             x = my_tree.selection()[0]
             my_tree.delete(x)
 
@@ -245,7 +247,9 @@ class TreeView:
                 
             conn.commit()
             cur.close()
-           
+           except:
+               conn.rollback() 
+        
         def update_record():
             conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
             cur = conn.cursor()
