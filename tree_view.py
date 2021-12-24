@@ -3,6 +3,7 @@ import psycopg2
 from tkinter import *
 from tkinter import ttk
 
+
 #Premené pre pripojenie aplikácie k PG admin
 DB_HOST = "localhost"
 DB_NAME = "projekt"
@@ -43,8 +44,36 @@ class TreeView:
         my_tree.heading("Second name", text="Second name", anchor=CENTER)
         my_tree.heading("Email", text="Email", anchor=CENTER)
         my_tree.heading("Password", text="Password", anchor=CENTER)
-
         my_tree.pack(pady=20)
+
+        #Vytvorenie okna na simuláciu injection
+        def dummy_table():
+            global dummy_box
+
+            dummy_win = Toplevel(window)
+            dummy_win.title("Dummy table")
+            dummy_win.geometry("200x200")
+
+            dummy_frame = LabelFrame(dummy_win, text="")
+            dummy_frame.pack(padx=10, pady=10)
+
+            dummy_box = Entry(dummy_frame)
+            dummy_box.pack(padx=20, pady=20)
+
+            dummy_button = Button(dummy_win, text="Injection", command=sql_injection)
+            dummy_button.pack(padx=20, pady=20)
+
+        #Napojenie na databázu bez preapered statementu
+        def sql_injection():
+            conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
+            cur = conn.cursor()
+
+            cur.execute(dummy_box.get())
+            #cur.fetchall()
+
+            conn.commit()
+            cur.close()
+            print("YOU SUCCESFULLY DROPED TABLE WITH SQL INJECTION "+ "\""+dummy_box.get()+"\"")
 
         #Search podla priezviska
         def search_lname():
@@ -150,6 +179,7 @@ class TreeView:
         search_menu.add_command(label="Search", command = search_records)
         search_menu.add_command(label="Reset", command = readData)
         search_menu.add_command(label="JOIN", command = join_func)
+        search_menu.add_command(label="Dummy", command = dummy_table)
         search_menu.add_command(label="Exit", command = window.quit)
 
         frame = Frame(window)
