@@ -7,7 +7,6 @@ User can add, delete and update user in database. Also can use tool for searchin
 ## External libraries
 
 ```
-Tkinter
 Bcrypt
 Psycopg2
 ```
