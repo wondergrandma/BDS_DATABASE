@@ -29,7 +29,7 @@ Pwd's in hash format -- DONE
 
 Sign up window with pwd authentication --
 
-User role and new schema --
+User role and new schema -- DONE
 
 CRUD -- DONE
 
