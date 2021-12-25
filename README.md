@@ -49,6 +49,8 @@ Gitrepositary with README file and .gitignore -- DONE
 
 Add licenses -- DONE
 
+SSH key -- DONE
+
 ## External libraries
 
 
