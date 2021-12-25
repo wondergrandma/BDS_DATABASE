@@ -45,7 +45,7 @@ Backupping database every midnight --
 
 Log -- 
 
-Gitrepositary with README file -- DONE
+Gitrepositary with README file and .gitignore -- DONE
 
 Add licenses -- 
 
