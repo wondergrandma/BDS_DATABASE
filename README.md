@@ -33,7 +33,7 @@ User role and new schema --
 
 CRUD -- DONE
 
-JOUN -- 
+JOIN -- 
 
 Transactions -- DONE
 
