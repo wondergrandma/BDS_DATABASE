@@ -128,3 +128,4 @@ dist
 
 # Mine
 __pycache__
+.DS_Store
