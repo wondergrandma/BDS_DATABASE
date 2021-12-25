@@ -47,7 +47,7 @@ Log --
 
 Gitrepositary with README file and .gitignore -- DONE
 
-Add licenses -- 
+Add licenses -- DONE
 
 ## External libraries
 
