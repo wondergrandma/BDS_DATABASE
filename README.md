@@ -6,7 +6,7 @@ The goal of the application is that the user can check inforamtions about users 
 
 User can add, delete and update user in database. Also can use tool for searching.
 
-Connection to PG admin database is provided by code down below.
+Connection to PG admin database is provided by code down below and external library Psycopg2.
 
 ```
 DB_HOST = "localhost"
