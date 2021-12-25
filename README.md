@@ -6,7 +6,7 @@ The goal of the application is that the user can check inforamtions about users 
 
 User can add, delete and update user in database. Also can use tool for searching.
 
-Connection tu PG admin database is provided by code down below.
+Connection to PG admin database is provided by code down below.
 
 ```
 DB_HOST = "localhost"
@@ -16,10 +16,42 @@ DB_PASS = "postgres"
 
 conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
 ```
+
+After executing this code the application is able to execute PostgreSQL commands in python format such as:
+
+```
+cur.execute("SELECT user_id, first_name, second_name, mail, pwd FROM \"user\" WHERE second_name = %s ", (find_data,))
+```
+
+## Check list
+
+Pwd's in hash format -- DONE
+
+Sign up window with pwd authentication --
+
+User role and new schema --
+
+CRUD -- DONE
+
+JOUN -- 
+
+Transactions -- DONE
+
+Filtering data -- DONE
+
+Dummy table for SQL injection testing -- DONE
+
+Backupping database every midnight -- 
+
+Log -- 
+
+Gitrepositary with README file -- DONE
+
+Add licenses -- 
+
 ## External libraries
 
 
 Bcrypt
 
 Psycopg2
-
