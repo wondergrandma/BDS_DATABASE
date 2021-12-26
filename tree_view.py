@@ -3,7 +3,6 @@ import logging
 import psycopg2 
 from tkinter import *
 from tkinter import ttk
-from join_treeview import JoinTreeview
 
 #Premené pre pripojenie aplikácie k PG admin
 DB_HOST = "localhost"
