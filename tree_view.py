@@ -21,7 +21,7 @@ class TreeView:
         format= "{asctime} {levelname:<8} {message}",
         style='{',
         filename='activity_log.log',
-        filemode='w'
+        filemode='a'
         )  
 
         #Vytvorenie okna
@@ -170,20 +170,20 @@ class TreeView:
             style.theme_use("clam")
 
             #Vytvorenie treeview
-            my_join = ttk.Treeview(window)
+            my_join = ttk.Treeview(join_win)
             my_join.pack()
 
             #definovanie stlpca
-            my_join['columns'] = ("ID", "First name")
+            my_join['columns'] = ("First name", "City")
                 
             #formatovanie stlpca
             my_join.column("#0", width=0, stretch=NO) #Musí tu z nejakeho dôvodu byť takto nastaviť aby ho nebolo vidieť 
-            my_join.column("ID", anchor=CENTER, width=50)
             my_join.column("First name", anchor=CENTER, width=120)
+            my_join.column("City", anchor=CENTER, width=120)
 
             my_join.heading("#0", text="", anchor=CENTER)
-            my_join.heading("ID", text="ID", anchor=CENTER)
             my_join.heading("First name", text="First name", anchor=CENTER)
+            my_join.heading("City", text="City", anchor=CENTER)
             my_join.pack(pady=20)
 
             def select_join():   
@@ -192,7 +192,7 @@ class TreeView:
                 conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
                 cur = conn.cursor()
 
-                cur.execute("SELECT a.first_name, b.address_id FROM public.user a LEFT JOIN user_has_address b ON a.user_id = b.user_id;")
+                cur.execute("SELECT a.first_name, c.city FROM public.user a LEFT JOIN user_has_address b ON a.user_id = b.user_id LEFT JOIN address c ON b.address_id = c.address_id;")
                 data = cur.fetchall()
 
                 global count 
@@ -293,7 +293,7 @@ class TreeView:
                conn.rollback() 
         
         def update_record():
-            logging.info('Data were updated by \"---\", UPDATED DATA -> '+"\""+id_box.get()+"\""+"\""+fname_box.get()+"\""+"\""+sname_box.get()+"\""+"\""+email_box.get()+"\""+"\""+pwd_box.get()+"\"")
+            logging.info('Data were updated by \"---\", UPDATED DATA -> '+" \""+id_box.get()+"\" "+" \""+fname_box.get()+"\" "+" \""+sname_box.get()+"\" "+" \""+email_box.get()+"\" "+" \""+pwd_box.get()+"\"")
             conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
             cur = conn.cursor()
 
