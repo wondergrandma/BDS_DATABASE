@@ -23,6 +23,16 @@ After executing this code the application is able to execute PostgreSQL commands
 cur.execute("SELECT user_id, first_name, second_name, mail, pwd FROM \"user\" WHERE second_name = %s ", (find_data,))
 ```
 
+Application is also able to trac who used which command and what was writen in Entry boxes this tracking is provided by logger.
+
+All informations are printed in seppared file "activity_log.log"
+
+Exaple of logger code:
+
+```
+
+```
+
 ## Check list
 
 Pwd's in hash format -- DONE
