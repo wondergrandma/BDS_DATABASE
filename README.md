@@ -43,7 +43,7 @@ User role and new schema -- DONE
 
 CRUD -- DONE
 
-JOIN -- 
+JOIN -- DONE
 
 Transactions -- DONE
 
