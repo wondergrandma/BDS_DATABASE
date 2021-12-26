@@ -1,8 +1,9 @@
 from typing import TYPE_CHECKING
+import logging
 import psycopg2 
 from tkinter import *
 from tkinter import ttk
-
+from join_treeview import JoinTreeview
 
 #Premené pre pripojenie aplikácie k PG admin
 DB_HOST = "localhost"
@@ -13,10 +14,20 @@ DB_PASS = "postgres"
 class TreeView:
 
     def viewDatabase(self, window):
+
+        #Logging
+        logging.basicConfig(
+        level=logging.INFO,
+        format= "{asctime} {levelname:<8} {message}",
+        style='{',
+        filename='activity_log.log',
+        filemode='w'
+        )  
+
         #Vytvorenie okna
         window.title("Postgres Databse")
         window.iconbitmap()
-        window.geometry("1030x550")
+        window.geometry("1030x600")
 
         #zmena štýlu
         style = ttk.Style()
@@ -65,6 +76,7 @@ class TreeView:
 
         #Napojenie na databázu bez preapered statementu
         def sql_injection():
+            logging.info('SQLinjection was used by --- with code '+"\""+search_box.get()+"\"")
             find_data = dummy_box.get()
             conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
             cur = conn.cursor()
@@ -81,6 +93,7 @@ class TreeView:
             global count 
             count = 0
 
+            logging.info('Search function was used by --- to search '+"\""+search_box.get()+"\"")
             find_data = search_box.get()
             search_win.destroy()
 
@@ -124,6 +137,7 @@ class TreeView:
         #vypísanie dát z PG admin
         def readData():
             #Funkcia na zmazanie predošlých dát dalej je implementovaná v tlačítku
+            logging.info('Showing database data to user \"---\"')
             for data in my_tree.get_children():
                 my_tree.delete(data)
 
@@ -143,44 +157,70 @@ class TreeView:
             
             conn.close()
 
-
-        def join_func():
-            global count 
-            count = 0
-
-            search_win.destroy()
-
-            for data in my_tree.get_children():
-                my_tree.delete(data)
-            
-            conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
-            cur = conn.cursor()
-                
-            cur.execute("SELECT a.first_name, b.address_id FROM public.user a LEFT JOIN user_has_address b ON a.user_id = b.user_id")
-            data = cur.fetchall()
-
-            for record in data:
-                if count % 2 == 0:
-                    my_tree.insert(parent='', index='end', iid=count, text='', values=(record[0], record[1]))
-                else:
-                    my_tree.insert(parent='', index='end', iid=count, text='', values=(record[0], record[1]))
-                count += 1
-
-            conn.commit()
-            cur.close()
-
         #my_tree.pack(pady=20)
+
+################################################################################################################################################
+        def view_join():
+            join_win = Toplevel(window)
+            join_win.title("JOIN")
+            join_win.geometry("500x500")
+
+            #zmena štýlu
+            style = ttk.Style()
+            style.theme_use("clam")
+
+            #Vytvorenie treeview
+            my_join = ttk.Treeview(window)
+            my_join.pack()
+
+            #definovanie stlpca
+            my_join['columns'] = ("ID", "First name")
+                
+            #formatovanie stlpca
+            my_join.column("#0", width=0, stretch=NO) #Musí tu z nejakeho dôvodu byť takto nastaviť aby ho nebolo vidieť 
+            my_join.column("ID", anchor=CENTER, width=50)
+            my_join.column("First name", anchor=CENTER, width=120)
+
+            my_join.heading("#0", text="", anchor=CENTER)
+            my_join.heading("ID", text="ID", anchor=CENTER)
+            my_join.heading("First name", text="First name", anchor=CENTER)
+            my_join.pack(pady=20)
+
+            def select_join():   
+                logging.info('Join function was used by \"---\"')
+
+                conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
+                cur = conn.cursor()
+
+                cur.execute("SELECT a.first_name, b.address_id FROM public.user a LEFT JOIN user_has_address b ON a.user_id = b.user_id;")
+                data = cur.fetchall()
+
+                global count 
+                count = 0
+                for record in data:
+                    my_join.insert(parent='', index='end', iid=count, text="", values=(record[0], record[1]))
+                    count += 1
+
+                conn.commit()
+                cur.close()
+                conn.close()
+            
+            select_join()
+
+################################################################################################################################################
 
         #Vytvorenie menu
         my_options = Menu(window)
         window.config(menu = my_options)
+        join = JoinTreeview()
+
 
         search_menu = Menu(my_options, tearoff=0)
         my_options.add_cascade(label="Option", menu = search_menu)
 
         search_menu.add_command(label="Search", command = search_records)
         search_menu.add_command(label="Reset", command = readData)
-        search_menu.add_command(label="JOIN", command = join_func)
+        search_menu.add_command(label="JOIN", command = view_join)
         search_menu.add_command(label="Dummy", command = dummy_table)
         search_menu.add_command(label="Exit", command = window.quit)
 
@@ -213,6 +253,7 @@ class TreeView:
 
         #funkcia na pridanie záznamu
         def add_record():
+            logging.info('Data were added by \"---\", NEW DATA -> '+"\""+id_box.get()+"\""+"\""+fname_box.get()+"\""+"\""+sname_box.get()+"\""+"\""+email_box.get()+"\""+"\""+pwd_box.get()+"\"")
             conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
             cur = conn.cursor()
 
@@ -234,6 +275,7 @@ class TreeView:
         
         def delete_record():
            try:
+            logging.info('Data were deleted by \"---\", DELETED DATA -> '+"\""+id_box.get()+"\""+"\""+fname_box.get()+"\""+"\""+sname_box.get()+"\""+"\""+email_box.get()+"\""+"\""+pwd_box.get()+"\"")
             x = my_tree.selection()[0]
             my_tree.delete(x)
 
@@ -251,6 +293,7 @@ class TreeView:
                conn.rollback() 
         
         def update_record():
+            logging.info('Data were updated by \"---\", UPDATED DATA -> '+"\""+id_box.get()+"\""+"\""+fname_box.get()+"\""+"\""+sname_box.get()+"\""+"\""+email_box.get()+"\""+"\""+pwd_box.get()+"\"")
             conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
             cur = conn.cursor()
 
@@ -287,9 +330,7 @@ class TreeView:
             email_box.insert(0, values[3])
             pwd_box.insert(0, values[4])
 
-
         my_tree.bind("<ButtonRelease-1>", clicker)
-
 
         #Buttons
         add = Button(window, text="Add",command=add_record)
@@ -300,8 +341,6 @@ class TreeView:
 
         update = Button(window, text="Update", command=update_record)
         update.pack(pady=20)
-
-        
 
 
         readData()
