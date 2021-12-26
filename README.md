@@ -43,7 +43,7 @@ Dummy table for SQL injection testing -- DONE
 
 Backupping database every midnight -- 
 
-Log -- 
+Log -- DONE
 
 Gitrepositary with README file and .gitignore -- DONE
 
