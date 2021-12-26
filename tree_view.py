@@ -3,6 +3,7 @@ import logging
 import psycopg2 
 from tkinter import *
 from tkinter import ttk
+import bcrypt
 
 #Premené pre pripojenie aplikácie k PG admin
 DB_HOST = "localhost"
@@ -156,8 +157,6 @@ class TreeView:
             
             conn.close()
 
-        #my_tree.pack(pady=20)
-
 ################################################################################################################################################
         def view_join():
             join_win = Toplevel(window)
@@ -211,8 +210,6 @@ class TreeView:
         #Vytvorenie menu
         my_options = Menu(window)
         window.config(menu = my_options)
-        join = JoinTreeview()
-
 
         search_menu = Menu(my_options, tearoff=0)
         my_options.add_cascade(label="Option", menu = search_menu)
@@ -252,15 +249,18 @@ class TreeView:
 
         #funkcia na pridanie záznamu
         def add_record():
-            logging.info('Data were added by \"---\", NEW DATA -> '+"\""+id_box.get()+"\""+"\""+fname_box.get()+"\""+"\""+sname_box.get()+"\""+"\""+email_box.get()+"\""+"\""+pwd_box.get()+"\"")
+            get_pwd = pwd_box.get()
+            hashed_pwd = bcrypt.hashpw(get_pwd.encode(), bcrypt.gensalt())
+
+            logging.info('Data were added by \"---\", NEW DATA -> '+"\""+id_box.get()+"\""+"\""+fname_box.get()+"\""+"\""+sname_box.get()+"\""+"\""+email_box.get()+"\""+"\""+str(hashed_pwd)+"\"")
             conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
             cur = conn.cursor()
 
             global count
-            my_tree.insert(parent='', index='end', iid=count, text="", values=(id_box.get(), fname_box.get(), sname_box.get(), email_box.get(), pwd_box.get()))
+            my_tree.insert(parent='', index='end', iid=count, text="", values=(id_box.get(), fname_box.get(), sname_box.get(), email_box.get(), str(hashed_pwd)))
             count += 1
 
-            cur.execute("INSERT INTO \"user\" (user_id, bank_branch_id, first_name, second_name, mail, pwd) VALUES (%s,%s,%s,%s,%s,%s);", (id_box.get(), 5, fname_box.get(), sname_box.get(), email_box.get(), pwd_box.get()))
+            cur.execute("INSERT INTO \"user\" (user_id, bank_branch_id, first_name, second_name, mail, pwd) VALUES (%s,%s,%s,%s,%s,%s);", (id_box.get(), 5, fname_box.get(), sname_box.get(), email_box.get(), str(hashed_pwd)))
 
             conn.commit()
             cur.close()
@@ -281,10 +281,10 @@ class TreeView:
             conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
             cur = conn.cursor()
 
-            cur.execute("DELETE FROM user_has_role WHERE user_id = " + id_box.get())
-            cur.execute("DELETE FROM user_has_address WHERE user_id = " + id_box.get())
-            cur.execute("DELETE FROM card WHERE user_id = " + id_box.get())    
-            cur.execute("DELETE FROM \"user\" WHERE user_id = " + id_box.get())
+            cur.execute("DELETE FROM user_has_role WHERE user_id = %s", (id_box.get(),))
+            cur.execute("DELETE FROM user_has_address WHERE user_id = %s", (id_box.get(),))
+            cur.execute("DELETE FROM card WHERE user_id = %s", (id_box.get(),))    
+            cur.execute("DELETE FROM \"user\" WHERE user_id = %s", (id_box.get(),))
                 
             conn.commit()
             cur.close()
@@ -309,7 +309,6 @@ class TreeView:
             sname_box.delete(0, END)
             email_box.delete(0, END)
             pwd_box.delete(0, END)
-
 
         #Funkcia pre vloženie udajov do poľa po kliknutí myšou
         def clicker(e):
