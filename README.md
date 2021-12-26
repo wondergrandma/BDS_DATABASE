@@ -4,7 +4,9 @@ Application can be built from command line.
 
 The goal of the application is that the user can check inforamtions about users in database.
 
-User can add, delete and update user in database. Also can use tool for searching.
+User can add, delete and update users in database. Also can use tool for searching.
+
+All added passwords are hashed using hash algorithm provided by bcrypt library.
 
 Connection to PG admin database is provided by code down below and external library Psycopg2.
 
