@@ -25,7 +25,7 @@ cur.execute("SELECT user_id, first_name, second_name, mail, pwd FROM \"user\" WH
 
 Application is also able to trac who used which command and what was writen in Entry boxes this tracking is provided by logger.
 
-All informations are printed in seppared file "activity_log.log"
+All informations are printed in seppared file "activity_log.log" - this file is ignored by .gitignore.
 
 Exaple of logger code:
 
