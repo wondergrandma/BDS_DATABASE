@@ -251,8 +251,9 @@ class TreeView:
         def add_record():
             get_pwd = pwd_box.get()
             hashed_pwd = bcrypt.hashpw(get_pwd.encode(), bcrypt.gensalt())
+            encoded_pwd = hashed_pwd.decode()
 
-            logging.info('Data were added by \"---\", NEW DATA -> '+"\""+id_box.get()+"\""+"\""+fname_box.get()+"\""+"\""+sname_box.get()+"\""+"\""+email_box.get()+"\""+"\""+str(hashed_pwd)+"\"")
+            logging.info('Data were added by \"---\", NEW DATA -> '+"\""+id_box.get()+"\""+"\""+fname_box.get()+"\""+"\""+sname_box.get()+"\""+"\""+email_box.get()+"\""+"\""+encoded_pwd+"\"")
             conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
             cur = conn.cursor()
 
@@ -260,7 +261,7 @@ class TreeView:
             my_tree.insert(parent='', index='end', iid=count, text="", values=(id_box.get(), fname_box.get(), sname_box.get(), email_box.get(), str(hashed_pwd)))
             count += 1
 
-            cur.execute("INSERT INTO \"user\" (user_id, bank_branch_id, first_name, second_name, mail, pwd) VALUES (%s,%s,%s,%s,%s,%s);", (id_box.get(), 5, fname_box.get(), sname_box.get(), email_box.get(), str(hashed_pwd)))
+            cur.execute("INSERT INTO \"user\" (user_id, bank_branch_id, first_name, second_name, mail, pwd) VALUES (%s,%s,%s,%s,%s,%s);", (id_box.get(), 5, fname_box.get(), sname_box.get(), email_box.get(), encoded_pwd))
 
             conn.commit()
             cur.close()

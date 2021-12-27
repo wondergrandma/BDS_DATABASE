@@ -31,11 +31,11 @@ def loginScreen():
         password = pwd_entry.get()
         global lg
         lg = Login(email, password)
-        
+
         if (lg.comparePasswords() == True):
             print("SUCCESS")
         else:
-            print("NO SECCESS")
+            print("NO SUCCESS")
 
     login_button1 = Button(window, text="LOG IN", command = comparePasswords)
     login_button1.pack()
