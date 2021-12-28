@@ -15,6 +15,8 @@ DB_PASS = "postgres"
 class TreeView:
 
     def viewDatabase(self, window):
+        for widget in window.winfo_children():
+            widget.destroy()
 
         #Logging
         logging.basicConfig(
@@ -360,13 +362,13 @@ class TreeView:
             readData()
 
         #Buttons
-        add = Button(window, text="Add",command=double_command)
+        add = Button(window, text="Add",command=add_record)
         add.pack(pady=20)
 
         remove = Button(window, text="Remove", command=delete_record)
         remove.pack(pady=20)
 
-        update = Button(window, text="Update", command=update_record)
+        update = Button(window, text="Update", command=double_command)
         update.pack(pady=20)
 
 
