@@ -1,10 +1,23 @@
 from tkinter import *
+from tkinter import messagebox
 from tree_view import TreeView
+import logging
 from login import Login
 
 window = Tk()
 tree_w = TreeView()
-#login = Login()
+
+#Logging
+logging.basicConfig(
+level=logging.INFO,
+format= "{asctime} {levelname:<8} {message}",
+style='{',
+filename='activity_log.log',
+filemode='a'
+)
+
+def warningMsg():
+    messagebox.showinfo("WARNING", "Username or password is not valid")
 
 def loginScreen():
     global email_entry, pwd_entry
@@ -33,9 +46,12 @@ def loginScreen():
         lg = Login(email, password)
 
         if (lg.comparePasswords() == True):
-            print("SUCCESS")
+            logging.info('Showing database data to user: ' +email)
+            logging.info('APPLICATION SUCCESSFULY STARTED -> user: '+email)
+            tree_w.viewDatabase(window)
         else:
-            print("NO SUCCESS")
+            logging.info('WRONG -> user: '+email)
+            warningMsg()
 
     login_button1 = Button(window, text="LOG IN", command = comparePasswords)
     login_button1.pack()
