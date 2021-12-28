@@ -23,11 +23,13 @@ class Login:
     email = ""
     password = ""
 
+    #Konštruktor
     def __init__(self, email, password):
         self.email = email
         self.password = password
         self.hashed = bcrypt.hashpw(password.encode("UTF-8"), bcrypt.gensalt())
         
+    #Funkcia na porovnanie hashu hesla využíva bcrypt
     def comparePasswords(self):
         try:
             conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
