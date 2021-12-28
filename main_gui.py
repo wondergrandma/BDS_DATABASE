@@ -33,7 +33,7 @@ def loginScreen():
     label_mail_2.grid(row=1,column=0)
 
     email_entry = Entry(frame, width=10)
-    pwd_entry = Entry(frame, width=10)
+    pwd_entry = Entry(frame, width=10, show = '*')
     email_entry.grid(row=0, column=1)
     pwd_entry.grid(row=1,column=1)
 
@@ -56,13 +56,5 @@ def loginScreen():
     login_button1 = Button(window, text="LOG IN", command = comparePasswords)
     login_button1.pack()
 
-#tree_w.viewDatabase(window)
-
-#login.loginScreen(window)
-
-
 loginScreen()
 window.mainloop()
-
-#oliverbielik@gmail.com
-#ahoj

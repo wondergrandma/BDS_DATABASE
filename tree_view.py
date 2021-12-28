@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+from tkinter import messagebox
 import logging
 import psycopg2 
 from tkinter import *
@@ -76,46 +77,52 @@ class TreeView:
 
         #Napojenie na databázu bez preapered statementu
         def sql_injection():
-            logging.info('SQLinjection was used by --- with code '+"\""+search_box.get()+"\"")
-            find_data = dummy_box.get()
-            conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
-            cur = conn.cursor()
+            try:
+                logging.info('SQLinjection was used with code '+"\""+search_box.get()+"\"")
+                find_data = dummy_box.get()
+                conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
+                cur = conn.cursor()
 
-            cur.execute("SELECT user_id, first_name, second_name, mail, pwd FROM \"user\" WHERE second_name =  " + "'"+find_data+"'")
-            #cur.fetchall()
+                cur.execute("SELECT user_id, first_name, second_name, mail, pwd FROM \"user\" WHERE second_name =  " + "'"+find_data+"'")
+                #cur.fetchall()
 
-            conn.commit()
-            cur.close()
-            print("YOU SUCCESFULLY DROPED TABLE WITH SQL INJECTION "+ "\""+dummy_box.get()+"\"")
+                conn.commit()
+                cur.close()
+                print("YOU SUCCESFULLY DROPED TABLE WITH SQL INJECTION "+ "\""+dummy_box.get()+"\"")
+            except:
+                messagebox.showinfo("WARNING", "THERE IS A EMPTY BOX PLEASE FILL ALL INFORMATIONS")
 
         #Search podla priezviska
         def search_lname():
-            global count 
-            count = 0
+            try:
+                global count 
+                count = 0
 
-            logging.info('Search function was used by --- to search '+"\""+search_box.get()+"\"")
-            find_data = search_box.get()
-            search_win.destroy()
+                logging.info('Search function was used to search '+"\""+search_box.get()+"\"")
+                find_data = search_box.get()
+                search_win.destroy()
 
-            for data in my_tree.get_children():
-                my_tree.delete(data)
-            
-            conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
-            cur = conn.cursor()
+                for data in my_tree.get_children():
+                    my_tree.delete(data)
                 
-            cur.execute("SELECT user_id, first_name, second_name, mail, pwd FROM \"user\" WHERE second_name = %s ", (find_data,))
-        
-            data = cur.fetchall()
+                conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
+                cur = conn.cursor()
+                    
+                cur.execute("SELECT user_id, first_name, second_name, mail, pwd FROM \"user\" WHERE second_name = %s ", (find_data,))
+            
+                data = cur.fetchall()
 
-            for record in data:
-                if count % 2 == 0:
-                    my_tree.insert(parent='', index='end', iid=count, text='', values=(record[0], record[1], record[2], record[3], record[4]))
-                else:
-                    my_tree.insert(parent='', index='end', iid=count, text='', values=(record[0], record[1], record[2], record[3], record[4]))
-                count += 1
+                for record in data:
+                    if count % 2 == 0:
+                        my_tree.insert(parent='', index='end', iid=count, text='', values=(record[0], record[1], record[2], record[3], record[4]))
+                    else:
+                        my_tree.insert(parent='', index='end', iid=count, text='', values=(record[0], record[1], record[2], record[3], record[4]))
+                    count += 1
 
-            conn.commit()
-            cur.close()
+                conn.commit()
+                cur.close()
+            except:
+                messagebox.showinfo("WARNING", "THERE IS A EMPTY BOX PLEASE FILL ALL INFORMATIONS")
 
         #Vytvorenie search okna
         def search_records():
@@ -136,26 +143,28 @@ class TreeView:
 
         #vypísanie dát z PG admin
         def readData():
-            #Funkcia na zmazanie predošlých dát dalej je implementovaná v tlačítku
-            logging.info('Showing database data to user \"---\"')
-            for data in my_tree.get_children():
-                my_tree.delete(data)
+            try:
+                #Funkcia na zmazanie predošlých dát dalej je implementovaná v tlačítku
+                for data in my_tree.get_children():
+                    my_tree.delete(data)
 
-            conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
-            cur = conn.cursor()
+                conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
+                cur = conn.cursor()
+                    
+                cur.execute("SELECT user_id, first_name, second_name, mail, pwd FROM \"user\"")
+                conn.commit()
+                data = cur.fetchall()
+                cur.close()
+
+                global count 
+                count = 0
+                for record in data:
+                    my_tree.insert(parent='', index='end', iid=count, text="", values=(record[0], record[1], record[2], record[3], record[4]))
+                    count += 1
                 
-            cur.execute("SELECT user_id, first_name, second_name, mail, pwd FROM \"user\"")
-            conn.commit()
-            data = cur.fetchall()
-            cur.close()
-
-            global count 
-            count = 0
-            for record in data:
-                my_tree.insert(parent='', index='end', iid=count, text="", values=(record[0], record[1], record[2], record[3], record[4]))
-                count += 1
-            
-            conn.close()
+                conn.close()
+            except:
+                logging.fatal("DATA NOT FOUND")
 
 ################################################################################################################################################
         def view_join():
@@ -184,24 +193,28 @@ class TreeView:
             my_join.heading("City", text="City", anchor=CENTER)
             my_join.pack(pady=20)
 
-            def select_join():   
-                logging.info('Join function was used by \"---\"')
+            def select_join():
+                try: 
+                    logging.info('Join function was used')
 
-                conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
-                cur = conn.cursor()
+                    conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
+                    cur = conn.cursor()
 
-                cur.execute("SELECT a.first_name, c.city FROM public.user a LEFT JOIN user_has_address b ON a.user_id = b.user_id LEFT JOIN address c ON b.address_id = c.address_id;")
-                data = cur.fetchall()
+                    cur.execute("SELECT a.first_name, c.city FROM public.user a LEFT JOIN user_has_address b ON a.user_id = b.user_id LEFT JOIN address c ON b.address_id = c.address_id;")
+                    data = cur.fetchall()
 
-                global count 
-                count = 0
-                for record in data:
-                    my_join.insert(parent='', index='end', iid=count, text="", values=(record[0], record[1]))
-                    count += 1
+                    global count 
+                    count = 0
+                    for record in data:
+                        my_join.insert(parent='', index='end', iid=count, text="", values=(record[0], record[1]))
+                        count += 1
 
-                conn.commit()
-                cur.close()
-                conn.close()
+                    conn.commit()
+                    cur.close()
+                    conn.close()
+                except psycopg2.errors.InvalidTextRepresentation:
+                    messagebox.showinfo("WARNING", "THERE IS A EMPTY BOX PLEASE FILL ALL INFORMATIONS")
+
             
             select_join()
 
@@ -244,38 +257,41 @@ class TreeView:
         sname_box.grid(row=1, column=2)
         email_box = Entry(frame)
         email_box.grid(row=1,column=3)
-        pwd_box = Entry(frame)
+        pwd_box = Entry(frame, show = '*')
         pwd_box.grid(row=1, column=4)
 
         #funkcia na pridanie záznamu
         def add_record():
-            get_pwd = pwd_box.get()
-            hashed_pwd = bcrypt.hashpw(get_pwd.encode(), bcrypt.gensalt())
-            encoded_pwd = hashed_pwd.decode()
+            try: 
+                get_pwd = pwd_box.get()
+                hashed_pwd = bcrypt.hashpw(get_pwd.encode(), bcrypt.gensalt())
+                encoded_pwd = hashed_pwd.decode()
 
-            logging.info('Data were added by \"---\", NEW DATA -> '+"\""+id_box.get()+"\""+"\""+fname_box.get()+"\""+"\""+sname_box.get()+"\""+"\""+email_box.get()+"\""+"\""+encoded_pwd+"\"")
-            conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
-            cur = conn.cursor()
+                logging.info('Data were added, NEW DATA -> '+"\""+id_box.get()+"\""+"\""+fname_box.get()+"\""+"\""+sname_box.get()+"\""+"\""+email_box.get()+"\""+"\""+encoded_pwd+"\"")
+                conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
+                cur = conn.cursor()
 
-            global count
-            my_tree.insert(parent='', index='end', iid=count, text="", values=(id_box.get(), fname_box.get(), sname_box.get(), email_box.get(), str(hashed_pwd)))
-            count += 1
+                global count
+                my_tree.insert(parent='', index='end', iid=count, text="", values=(id_box.get(), fname_box.get(), sname_box.get(), email_box.get(), str(hashed_pwd)))
+                count += 1
 
-            cur.execute("INSERT INTO \"user\" (user_id, bank_branch_id, first_name, second_name, mail, pwd) VALUES (%s,%s,%s,%s,%s,%s);", (id_box.get(), 5, fname_box.get(), sname_box.get(), email_box.get(), encoded_pwd))
+                cur.execute("INSERT INTO \"user\" (user_id, bank_branch_id, first_name, second_name, mail, pwd) VALUES (%s,%s,%s,%s,%s,%s);", (id_box.get(), 5, fname_box.get(), sname_box.get(), email_box.get(), encoded_pwd))
 
-            conn.commit()
-            cur.close()
-            
-            #Vyčistenie boxov po tom ako sa spusti funkcia
-            id_box.delete(0, END)
-            fname_box.delete(0, END)
-            sname_box.delete(0, END)
-            email_box.delete(0, END)
-            pwd_box.delete(0, END)
+                conn.commit()
+                cur.close()
+                
+                #Vyčistenie boxov po tom ako sa spusti funkcia
+                id_box.delete(0, END)
+                fname_box.delete(0, END)
+                sname_box.delete(0, END)
+                email_box.delete(0, END)
+                pwd_box.delete(0, END)
+            except psycopg2.errors.InvalidTextRepresentation:
+                messagebox.showinfo("WARNING", "THERE IS A EMPTY BOX PLEASE FILL ALL INFORMATIONS")
         
         def delete_record():
            try:
-            logging.info('Data were deleted by \"---\", DELETED DATA -> '+"\""+id_box.get()+"\""+"\""+fname_box.get()+"\""+"\""+sname_box.get()+"\""+"\""+email_box.get()+"\""+"\""+pwd_box.get()+"\"")
+            logging.info('Data were deleted, DELETED DATA -> '+"\""+id_box.get()+"\""+"\""+fname_box.get()+"\""+"\""+sname_box.get()+"\""+"\""+email_box.get()+"\""+"\""+pwd_box.get()+"\"")
             x = my_tree.selection()[0]
             my_tree.delete(x)
 
@@ -293,23 +309,31 @@ class TreeView:
                conn.rollback() 
         
         def update_record():
-            logging.info('Data were updated by \"---\", UPDATED DATA -> '+" \""+id_box.get()+"\" "+" \""+fname_box.get()+"\" "+" \""+sname_box.get()+"\" "+" \""+email_box.get()+"\" "+" \""+pwd_box.get()+"\"")
-            conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
-            cur = conn.cursor()
+            try:
+                get_pwd = pwd_box.get()
+                hashed_pwd = bcrypt.hashpw(get_pwd.encode(), bcrypt.gensalt())
+                encoded_pwd = hashed_pwd.decode()
 
-            selected = my_tree.focus()
-            my_tree.item(selected, text="", values=(id_box.get(), fname_box.get(), sname_box.get(), email_box.get(), pwd_box.get()))
-            cur.execute("UPDATE \"user\" SET first_name = %s, second_name = %s, mail = %s WHERE user_id = %s;", (fname_box.get(), sname_box.get(), email_box.get(), id_box.get(),))
-            
-            conn.commit()
-            cur.close()
+                logging.info('Data were updated, UPDATED DATA -> '+" \""+id_box.get()+"\" "+" \""+fname_box.get()+"\" "+" \""+sname_box.get()+"\" "+" \""+email_box.get()+"\" "+" \""+encoded_pwd+"\"")
+                
+                conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
+                cur = conn.cursor()
 
-            #Vyčistenie boxov po tom ako sa spusti funkcia
-            id_box.delete(0, END)
-            fname_box.delete(0, END)
-            sname_box.delete(0, END)
-            email_box.delete(0, END)
-            pwd_box.delete(0, END)
+                selected = my_tree.focus()
+                my_tree.item(selected, text="", values=(id_box.get(), fname_box.get(), sname_box.get(), email_box.get(), pwd_box.get()))
+                cur.execute("UPDATE \"user\" SET first_name = %s, second_name = %s, mail = %s, pwd = %s WHERE user_id = %s;", (fname_box.get(), sname_box.get(), email_box.get(),encoded_pwd ,id_box.get(),))
+                
+                conn.commit()
+                cur.close()
+
+                #Vyčistenie boxov po tom ako sa spusti funkcia
+                id_box.delete(0, END)
+                fname_box.delete(0, END)
+                sname_box.delete(0, END)
+                email_box.delete(0, END)
+                pwd_box.delete(0, END)
+            except psycopg2.errors.InvalidTextRepresentation:
+                messagebox.showinfo("WARNING", "THERE IS A EMPTY BOX PLEASE FILL ALL INFORMATIONS")
 
         #Funkcia pre vloženie udajov do poľa po kliknutí myšou
         def clicker(e):
@@ -331,8 +355,12 @@ class TreeView:
 
         my_tree.bind("<ButtonRelease-1>", clicker)
 
+        def double_command():
+            add_record()
+            readData()
+
         #Buttons
-        add = Button(window, text="Add",command=add_record)
+        add = Button(window, text="Add",command=double_command)
         add.pack(pady=20)
 
         remove = Button(window, text="Remove", command=delete_record)
