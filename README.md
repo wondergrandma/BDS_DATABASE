@@ -35,7 +35,7 @@ Exaple of logger code:
 
 ```
 
-Licenses were generated using `$ pip install pip-licenses` and `$ pip-licenses --format=plain-vertical`
+Licenses were generated using `$ pip install pip-licenses` and `$ pip-licenses --format=plain-vertical`.
 
 ## Check list
 
