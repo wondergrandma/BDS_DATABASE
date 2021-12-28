@@ -1,6 +1,6 @@
 # BDS_DATABASE
 
-Application can be built from command line. 
+Application can be run in Visual Studio. 
 
 The goal of the application is that the user can check inforamtions about users in database.
 
@@ -34,6 +34,8 @@ Exaple of logger code:
 ```
 
 ```
+
+Licenses were generated using `$ pip install pip-licenses` and `$ pip-licenses --format=plain-vertical`
 
 ## Check list
 
