@@ -357,8 +357,9 @@ class TreeView:
 
         my_tree.bind("<ButtonRelease-1>", clicker)
 
+        #Funkcia ktorá vykoná dve funkcie update a nasledne refreshne databazu tato funkcia sa volá následne v tlačítku
         def double_command():
-            add_record()
+            update_record()
             readData()
 
         #Buttons
