@@ -29,10 +29,22 @@ Application is also able to trac who used which command and what was writen in E
 
 All informations are printed in seppared file "activity_log.log" - this file is ignored by .gitignore.
 
-Exaple of logger code:
+Creating logger:
 
 ```
+logging.basicConfig(
+level=logging.INFO,
+format= "{asctime} {levelname:<8} {message}",
+style='{',
+filename='activity_log.log',
+filemode='a'
+)
+```
 
+Example of logger code:
+
+```
+logging.info('Showing database data to user: ' +email)
 ```
 
 Licenses were generated using `$ pip install pip-licenses` and `$ pip-licenses --format=plain-vertical`.
@@ -41,7 +53,7 @@ Licenses were generated using `$ pip install pip-licenses` and `$ pip-licenses -
 
 Pwd's in hash format -- DONE
 
-Sign up window with pwd authentication --
+Sign up window with pwd authentication -- DONE
 
 User role and new schema -- DONE
 
