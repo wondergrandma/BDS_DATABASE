@@ -32,8 +32,8 @@ def loginScreen():
     label_mail_1.grid(row=0, column=0)
     label_mail_2.grid(row=1,column=0)
 
-    email_entry = Entry(frame, width=10)
-    pwd_entry = Entry(frame, width=10, show = '*')
+    email_entry = Entry(frame, width=20)
+    pwd_entry = Entry(frame, width=20, show = '*')
     email_entry.grid(row=0, column=1)
     pwd_entry.grid(row=1,column=1)
 
