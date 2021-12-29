@@ -49,6 +49,8 @@ logging.info('Showing database data to user: ' +email)
 
 Licenses were generated using `$ pip install pip-licenses` and `$ pip-licenses --format=plain-vertical`.
 
+Application was build using external library Pyinstaller using `$ pip3 install pyinstaller` and for building `$ pyinstaller main_gui.py` 
+
 ## Check list
 
 Pwd's in hash format -- DONE
@@ -83,3 +85,5 @@ SSH key -- DONE
 Bcrypt
 
 Psycopg2
+
+Pyinstaller
