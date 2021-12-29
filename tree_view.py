@@ -172,7 +172,7 @@ class TreeView:
         def view_join():
             join_win = Toplevel(window)
             join_win.title("JOIN")
-            join_win.geometry("500x500")
+            join_win.geometry("250x231")
 
             #zmena štýlu
             style = ttk.Style()
@@ -195,6 +195,8 @@ class TreeView:
             my_join.heading("City", text="City", anchor=CENTER)
             my_join.pack(pady=20)
 
+
+
             def select_join():
                 try: 
                     logging.info('Join function was used')
@@ -216,7 +218,6 @@ class TreeView:
                     conn.close()
                 except psycopg2.errors.InvalidTextRepresentation:
                     messagebox.showinfo("WARNING", "THERE IS A EMPTY BOX PLEASE FILL ALL INFORMATIONS")
-
             
             select_join()
 

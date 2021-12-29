@@ -56,5 +56,6 @@ def loginScreen():
     login_button1 = Button(window, text="LOG IN", command = comparePasswords)
     login_button1.pack()
 
+#tree_w.viewDatabase(window)
 loginScreen()
 window.mainloop()
