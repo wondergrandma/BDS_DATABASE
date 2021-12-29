@@ -47,7 +47,7 @@ Example of logger code:
 logging.info('Showing database data to user: ' +email)
 ```
 
-Licenses were generated using `$ pip install pip-licenses` and `$ pip-licenses --format=plain-vertical`.
+Licenses were generated using `$ pip install pip-licenses` and `$ pip-licenses --format=plain-vertical --with-license-file`.
 
 Application was build using external library Pyinstaller using `$ pip3 install pyinstaller` and for building `$ pyinstaller main_gui.py` 
 
