@@ -8,6 +8,8 @@ User can add, delete and update users in database. Also can use tool for searchi
 
 All added passwords are hashed using hash algorithm provided by bcrypt library.
 
+
+
 Connection to PG admin database is provided by code down below and external library Psycopg2.
 
 ```
@@ -69,7 +71,7 @@ Filtering data -- DONE
 
 Dummy table for SQL injection testing -- DONE
 
-Backupping database every midnight -- 
+Backupping database every midnight -- DONE
 
 Log -- DONE
 
