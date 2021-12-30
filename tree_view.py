@@ -76,7 +76,7 @@ class TreeView:
 
             dummy_button = Button(dummy_win, text="Injection", command=sql_injection)
             dummy_button.pack(padx=20, pady=20)
-
+        
         #Napojenie na databázu bez preapered statementu
         def sql_injection():
             try:
@@ -86,15 +86,76 @@ class TreeView:
                 cur = conn.cursor()
 
                 cur.execute("SELECT user_id, first_name, second_name, mail, pwd FROM \"user\" WHERE second_name =  " + "'"+find_data+"'")
-                #cur.fetchall()
 
                 conn.commit()
                 cur.close()
                 print("YOU SUCCESFULLY DROPED TABLE WITH SQL INJECTION "+ "\""+dummy_box.get()+"\"")
             except:
                 messagebox.showinfo("WARNING", "THERE IS A EMPTY BOX PLEASE FILL ALL INFORMATIONS")
+        
+############################################################################################################################################
 
-        #Search podla priezviska
+        #Testovanie 1:1 injection
+        def view_injection():
+            global onetoone_box, my_join
+            join_win = Toplevel(window)
+            join_win.title("DUMMY")
+            join_win.geometry("250x440")
+
+            #zmena štýlu
+            style = ttk.Style()
+            style.theme_use("clam")
+
+            #Vytvorenie treeview
+            my_join = ttk.Treeview(join_win)
+            my_join.pack()
+
+            #definovanie stlpca
+            my_join['columns'] = ("First name", "City")
+                        
+            #formatovanie stlpca
+            my_join.column("#0", width=0, stretch=NO) #Musí tu z nejakeho dôvodu byť takto nastaviť aby ho nebolo vidieť 
+            my_join.column("First name", anchor=CENTER, width=120)
+            my_join.column("City", anchor=CENTER, width=120)
+
+            my_join.heading("#0", text="", anchor=CENTER)
+            my_join.heading("First name", text="First name", anchor=CENTER)
+            my_join.heading("City", text="City", anchor=CENTER)
+            my_join.pack(pady=20)
+
+            onetoone_box = Entry(join_win)
+            onetoone_box.pack(padx=20, pady=20)
+
+            #1:1 not prepeared statement sql query
+            def sql_onetoone():
+                try:
+                    logging.info('SQLinjection was used with code '+"\""+onetoone_box.get()+"\"")
+                    find_data = onetoone_box.get()
+                    conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
+                    cur = conn.cursor()
+
+                    cur.execute("SELECT user_id, first_name, second_name, mail, pwd FROM \"user\" WHERE second_name =  " + "'"+find_data+"'")
+                    data = cur.fetchall()
+
+                    global count 
+                    count = 0
+                    for record in data:
+                        my_join.insert(parent='', index='end', iid=count, text="", values=(record[0], record[1], record[2], record[3], record[4]))
+                        count += 1
+
+                    conn.commit()
+                    cur.close()
+                    print("YOU SUCCESFULLY MADE 1:1 SQL INJECTION "+ "\""+onetoone_box.get()+"\"")
+                except:
+                    messagebox.showinfo("WARNING", "THERE IS A EMPTY BOX PLEASE FILL ALL INFORMATIONS")
+
+            #Buttons
+            inject = Button(join_win, text="Add",command=sql_onetoone)
+            inject.pack(pady=20)
+
+############################################################################################################################################
+
+    #Search podla priezviska
         def search_lname():
             try:
                 global count 
@@ -168,7 +229,7 @@ class TreeView:
             except:
                 logging.fatal("DATA NOT FOUND")
 
-################################################################################################################################################
+        #Vytvorenie okna pre join
         def view_join():
             join_win = Toplevel(window)
             join_win.title("JOIN")
@@ -195,8 +256,7 @@ class TreeView:
             my_join.heading("City", text="City", anchor=CENTER)
             my_join.pack(pady=20)
 
-
-
+            #SQL query na vykonanie joinu
             def select_join():
                 try: 
                     logging.info('Join function was used')
@@ -221,8 +281,6 @@ class TreeView:
             
             select_join()
 
-################################################################################################################################################
-
         #Vytvorenie menu
         my_options = Menu(window)
         window.config(menu = my_options)
@@ -233,7 +291,8 @@ class TreeView:
         search_menu.add_command(label="Search", command = search_records)
         search_menu.add_command(label="Reset", command = readData)
         search_menu.add_command(label="JOIN", command = view_join)
-        search_menu.add_command(label="Dummy", command = dummy_table)
+        search_menu.add_command(label="Dummy DROP", command = dummy_table)
+        search_menu.add_command(label="Dummy 1:1", command = view_injection)
         search_menu.add_command(label="Exit", command = window.quit)
 
         frame = Frame(window)
@@ -292,6 +351,7 @@ class TreeView:
             except psycopg2.errors.InvalidTextRepresentation:
                 messagebox.showinfo("WARNING", "THERE IS A EMPTY BOX PLEASE FILL ALL INFORMATIONS")
         
+        #Vymazanie záznamu
         def delete_record():
            try:
             logging.info('Data were deleted, DELETED DATA -> '+"\""+id_box.get()+"\""+"\""+fname_box.get()+"\""+"\""+sname_box.get()+"\""+"\""+email_box.get()+"\""+"\""+pwd_box.get()+"\"")
@@ -311,6 +371,7 @@ class TreeView:
            except:
                conn.rollback() 
         
+        #Update záznamu
         def update_record():
             try:
                 get_pwd = pwd_box.get()
@@ -372,6 +433,5 @@ class TreeView:
 
         update = Button(window, text="Update", command=double_command)
         update.pack(pady=20)
-
 
         readData()

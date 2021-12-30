@@ -59,3 +59,5 @@ def loginScreen():
 #tree_w.viewDatabase(window)
 loginScreen()
 window.mainloop()
+
+#' OR 1=1;--
