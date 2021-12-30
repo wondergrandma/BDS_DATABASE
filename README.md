@@ -53,34 +53,6 @@ Licenses were generated using `$ pip install pip-licenses` and `$ pip-licenses -
 
 Application was build using external library Pyinstaller using `$ pip3 install pyinstaller` and for building `$ pyinstaller main_gui.py` 
 
-## Check list
-
-Pwd's in hash format -- DONE
-
-Sign up window with pwd authentication -- DONE
-
-User role and new schema -- DONE
-
-CRUD -- DONE
-
-JOIN -- DONE
-
-Transactions -- DONE
-
-Filtering data -- DONE
-
-Dummy table for SQL injection testing -- DONE
-
-Backupping database every midnight -- DONE
-
-Log -- DONE
-
-Gitrepositary with README file and .gitignore -- DONE
-
-Add licenses -- DONE
-
-SSH key -- DONE
-
 ## External libraries
 
 
