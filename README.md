@@ -53,6 +53,10 @@ Licenses were generated using `$ pip install pip-licenses` and `$ pip-licenses -
 
 Application was build using external library Pyinstaller using `$ pip3 install pyinstaller` and for building `$ pyinstaller main_gui.py` 
 
+SSH key:
+
+SSH key for Github was generated using terminal and `$ ssh-keygen -t rsa -b 2048 -C "emali"`.
+
 ## External libraries
 
 
