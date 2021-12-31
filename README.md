@@ -1,6 +1,6 @@
 # BDS_DATABASE
 
-Application can be run in Visual Studio. 
+Application can be run in Visual Studio also as .exe file on Windows. 
 
 The goal of the application is that the user can check inforamtions about users in database.
 
